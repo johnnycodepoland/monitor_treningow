@@ -1,3 +1,4 @@
+from utils import load_personal_bests
 styles = {
     "1": {
         "name": "Motylkowy",
@@ -35,10 +36,12 @@ styles = {
 }
 
 def zapisz_rekord_zyciowy(login, time, description):
-    with open("data/personal_bests.csv", "a") as file:
-        file.write(f"{login}, {time}, {description}\n")
-    print("Rekord życiowy został dodany ✅")
-
+    try:
+        with open("data/personal_bests.csv", "a") as file:
+            file.write(f"{login.strip()},{time.strip()},{description.strip()}\n")
+        print("Rekord życiowy został dodany ✅")
+    except FileNotFoundError:
+        return
 def dodaj_rekord_zyciowy(login):
     while True:
         for key, val in styles.items():
@@ -83,9 +86,9 @@ def sprawdz_rekordy_zyciowe(login, choosed_style):
                 print(f"⏱️ Czas: {time}")
                 print("-------------------------")
                 time_found = True # Dajemy jako True jest uda nam się znaleźć szukany czas
-
+                return True
     if not time_found:
-        print("Nie masz czasu na tym dystansie ❌")
+        return False
 
 def wyswietl_rekord_zyciowy(login):
     while True:
@@ -105,7 +108,59 @@ def wyswietl_rekord_zyciowy(login):
                     if choose_2 in styles[choose]:
                         choosed_style = styles[choose][choose_2]
                         sprawdz_rekordy_zyciowe(login, choosed_style)
-                        return
+                        if sprawdz_rekordy_zyciowe(login, choosed_style) is False:
+                            print("Nie masz czasu na tym dystansie ❌")
+                            return
+                        else:
+                            return
+                    else:
+                        print("Podano niepoprawny dystans ❌")
+            else:
+                print("Taki styl nie istnieje ❌")
+
+def edytuj_rekord_zyciowy(login):
+    personal_bests = load_personal_bests()
+
+    while True:
+        for key, val in styles.items():
+            print(f"{key}. {val['name']}") # key to numer sekcji np. 1,2 ; val zawiera wszystkie dane zawarte w np. "1", a val['name'] zawiera tylko nazwę którą potrzebujemy
+        while True:
+            choose = input("Twój wybór: ")
+            if choose in styles:
+                current_style = styles[choose]
+                for i, key in enumerate(current_style):
+                    if key == "name":
+                        continue
+                    else:
+                        print(f"{i}. {key}")
+                while True:
+                    choose_2 = input("Twój wybór (długość): ")
+                    if choose_2 in styles[choose]:
+                        choosed_style = styles[choose][choose_2]
+                        sprawdz_rekordy_zyciowe(login, choosed_style)
+                        if sprawdz_rekordy_zyciowe(login, choosed_style):
+                            while True:
+                                try:
+                                    new_time = input("Podaj swój nowy czas (MM:SS:ss): ")
+                                    minutes, seconds, milliseconds = new_time.split(":")
+                                    if minutes.isdigit() and seconds.isdigit() and milliseconds.isdigit() and int(seconds) < 60 and int(milliseconds) < 100:
+                                        personal_bests[login][choosed_style] = new_time
+                                        try:
+                                            with open("data/personal_bests.csv", "w") as file:
+                                                for user, records in personal_bests.items():
+                                                    for style, time in records.items():
+                                                        file.write(f"{user.strip()},{time.strip()},{style.strip()}\n")
+                                            print("Nowy czas został zapisany ✅")
+                                            return
+                                        except FileNotFoundError:
+                                            return
+                                    else:
+                                        print("Podano niepoprawny format czasu ❌")
+                                except ValueError:
+                                    print("Podano niepoprawny format czasu ❌")
+                        else:
+                            print("Nie masz czasu na tym dystansie ❌")
+                            return
                     else:
                         print("Podano niepoprawny dystans ❌")
             else:

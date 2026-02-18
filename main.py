@@ -1,5 +1,5 @@
 from auth import logowanie, rejestracja, password_tries, login_tries
-from personal_bests import dodaj_rekord_zyciowy, wyswietl_rekord_zyciowy
+from personal_bests import dodaj_rekord_zyciowy, wyswietl_rekord_zyciowy, edytuj_rekord_zyciowy
 from trainings import dodaj_trening, wyswietl_treningi
 from utils import load_users
 
@@ -19,11 +19,12 @@ def panel_uzytkownika(login):
         print("3. Wyświetl dodane treningi")
         print("4. Dodaj rekord życiowy")
         print("5. Wyświetl rekord życiowy")
-        print("6. Wyloguj się")
+        print("6. Edytuj rekord życiowy")
+        print("7. Wyloguj się")
 
         choose = input("Wybierz akcję do wykonania: ")
 
-        if choose == "6":
+        if choose == "7":
             print("Za chwile nastąpi wylogowanie ❌")
             zalogowany = False
             break
@@ -56,6 +57,8 @@ def panel_uzytkownika(login):
             dodaj_rekord_zyciowy(login)
         elif choose == "5":
             wyswietl_rekord_zyciowy(login)
+        elif choose == "6":
+            edytuj_rekord_zyciowy(login)
         else:
             print("Nieznana opcja! Wybierz ponownie.")
 
