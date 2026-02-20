@@ -1,3 +1,4 @@
+
 from utils import load_personal_bests
 styles = {
     "1": {
@@ -42,6 +43,7 @@ def zapisz_rekord_zyciowy(login, time, description):
         print("Rekord życiowy został dodany ✅")
     except FileNotFoundError:
         return
+
 def dodaj_rekord_zyciowy(login):
     while True:
         for key, val in styles.items():
@@ -58,17 +60,22 @@ def dodaj_rekord_zyciowy(login):
                 while True:
                     choose_2 = input("Twój wybór (długość): ")
                     if choose_2 in styles[choose]:
-                        while True:
-                            try:
-                                time = input("Podaj swój czas (MM:SS:ss): ")
-                                minutes, seconds, milliseconds = time.split(":")
-                                if minutes.isdigit() and seconds.isdigit() and milliseconds.isdigit() and int(seconds) < 60 and int(milliseconds) < 100:
-                                    zapisz_rekord_zyciowy(login, time, styles[choose][choose_2])
-                                    return
-                                else:
+                        choosed_style = styles[choose][choose_2]
+                        if sprawdz_rekordy_zyciowe(login, choosed_style):
+                            print("Masz już czas na tym dystansie ❌")
+                            return
+                        else:
+                            while True:
+                                try:
+                                    time = input("Podaj swój czas (MM:SS:ss): ")
+                                    minutes, seconds, milliseconds = time.split(":")
+                                    if minutes.isdigit() and seconds.isdigit() and milliseconds.isdigit() and int(seconds) < 60 and int(milliseconds) < 100:
+                                        zapisz_rekord_zyciowy(login, time, styles[choose][choose_2])
+                                        return
+                                    else:
+                                        print("Podano niepoprawny format czasu ❌")
+                                except ValueError:
                                     print("Podano niepoprawny format czasu ❌")
-                            except ValueError:
-                                print("Podano niepoprawny format czasu ❌")
                     else:
                         print("Podano niepoprawny dystans ❌")
             else:
@@ -137,7 +144,6 @@ def edytuj_rekord_zyciowy(login):
                     choose_2 = input("Twój wybór (długość): ")
                     if choose_2 in styles[choose]:
                         choosed_style = styles[choose][choose_2]
-                        sprawdz_rekordy_zyciowe(login, choosed_style)
                         if sprawdz_rekordy_zyciowe(login, choosed_style):
                             while True:
                                 try:
