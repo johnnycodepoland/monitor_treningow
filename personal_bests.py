@@ -171,3 +171,52 @@ def edytuj_rekord_zyciowy(login):
                         print("Podano niepoprawny dystans ❌")
             else:
                 print("Taki styl nie istnieje ❌")
+
+def usun_rekord_zyciowy(login):
+    personal_bests = load_personal_bests()
+
+    while True:
+        for key, val in styles.items():
+            print(f"{key}. {val['name']}") # key to numer sekcji np. 1,2 ; val zawiera wszystkie dane zawarte w np. "1", a val['name'] zawiera tylko nazwę którą potrzebujemy
+        while True:
+            choose = input("Twój wybór: ")
+            if choose in styles:
+                current_style = styles[choose]
+                for i, key in enumerate(current_style):
+                    if key == "name":
+                        continue
+                    else:
+                        print(f"{i}. {key}")
+                while True:
+                    choose_2 = input("Twój wybór (długość): ")
+                    if choose_2 in styles[choose]:
+                        choosed_style = styles[choose][choose_2]
+                        if sprawdz_rekordy_zyciowe(login, choosed_style):
+                            while True:
+                                confirm = input("Czy na pewno chcesz usunąć rekord? (t/n): ")
+                                if confirm.lower() == "t":
+                                    try:
+                                        del personal_bests[login][choosed_style]
+                                        try:
+                                            with open("data/personal_bests.csv", "w") as file:
+                                                for user, records in personal_bests.items():
+                                                    for style, time in records.items():
+                                                        file.write(f"{user.strip()},{time.strip()},{style.strip()}\n")
+                                            print("Rekord życiowy został usunięty ✅")
+                                            return
+                                        except FileNotFoundError:
+                                            return
+                                    except KeyError:
+                                        print("Wystąpił błąd podczas usuwania ❌")
+                                elif confirm.lower() == "n":
+                                    print("Anuluje usuwanie ❌")
+                                    return
+                                else:
+                                    print("Wybrano niepoprawną opcję ❌")
+                        else:
+                            print("Nie masz czasu na tym dystansie ❌")
+                            return
+                    else:
+                        print("Podano niepoprawny dystans ❌")
+            else:
+                print("Taki styl nie istnieje ❌")
