@@ -1,6 +1,6 @@
 from utils import load_trainings
 
-def dodaj_trening(login):
+def add_training(login):
     from datetime import datetime
 
     while True:
@@ -27,7 +27,7 @@ def dodaj_trening(login):
         file.write(f"{login}, {training_date}, {training_distance}, {training_time}\n")
     print("Trening został dodany ✅")
 
-def wyswietl_treningi(login):
+def show_trainings(login):
     trainings = load_trainings()
 
     if login in trainings:

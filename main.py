@@ -1,10 +1,10 @@
 import json
-from auth import logowanie, rejestracja, password_tries, login_tries
-from personal_bests import dodaj_rekord_zyciowy, wyswietl_rekord_zyciowy, edytuj_rekord_zyciowy, usun_rekord_zyciowy
-from trainings import dodaj_trening, wyswietl_treningi
+from auth import signin, signup, password_tries, login_tries
+from personal_bests import add_personal_best, show_personal_best, edit_personal_best, delete_personal_best
+from trainings import add_training, show_trainings
 from utils import load_users
 
-def panel_uzytkownika(login):
+def user_panel(login):
     zalogowany = True
     choose = ""
     users = load_users()
@@ -53,17 +53,17 @@ def panel_uzytkownika(login):
             else:
                 print("Podano niepoprawne stare hasło ❌")
         elif choose == "2":
-            dodaj_trening(login)
+            add_training(login)
         elif choose == "3":
-            wyswietl_treningi(login)
+            show_trainings(login)
         elif choose == "4":
-            dodaj_rekord_zyciowy(login)
+            add_personal_best(login)
         elif choose == "5":
-            wyswietl_rekord_zyciowy(login)
+            show_personal_best(login)
         elif choose == "6":
-            edytuj_rekord_zyciowy(login)
+            edit_personal_best(login)
         elif choose == "7":
-            usun_rekord_zyciowy(login)
+            delete_personal_best(login)
         else:
             print("Nieznana opcja! Wybierz ponownie.")
 
@@ -80,13 +80,13 @@ while password_tries > 0 and login_tries > 0:
 
     choose = input("Wybierz akcję do wykonania: ")
     if choose == "1":
-        logged_user = logowanie()
+        logged_user = signin()
     elif choose == "2":
-        rejestracja()
+        signup()
     elif choose == "3":
         print("Zamykam program ❌")
         break
     else:
         print("Nieznana opcja! Wybierz ponownie.")
     if logged_user:
-        panel_uzytkownika(logged_user)
+        user_panel(logged_user)

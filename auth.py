@@ -3,7 +3,7 @@ from utils import load_users
 password_tries = 3
 login_tries = 3
 
-def logowanie():
+def signin():
     password_tries = 3
     login_tries = 3
     users = load_users()
@@ -35,7 +35,7 @@ def logowanie():
             print("Zablokowano dostęp do konta!")
             exit()
 
-def rejestracja():
+def signup():
     users = load_users()
 
     while True:
