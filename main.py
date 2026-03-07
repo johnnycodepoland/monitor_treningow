@@ -1,8 +1,8 @@
+import json
 from auth import logowanie, rejestracja, password_tries, login_tries
 from personal_bests import dodaj_rekord_zyciowy, wyswietl_rekord_zyciowy, edytuj_rekord_zyciowy, usun_rekord_zyciowy
 from trainings import dodaj_trening, wyswietl_treningi
 from utils import load_users
-
 
 def panel_uzytkownika(login):
     zalogowany = True
@@ -39,9 +39,11 @@ def panel_uzytkownika(login):
                             second_password = input("Powtórz nowe hasło: ")
                             if second_password == new_password:
                                 users[login] = new_password
-                                with open("data/users.txt", "w") as file:
-                                    for user, password in users.items():
-                                        file.write(f"{user}:{password}\n")
+                                try:
+                                    with open ("data/users.json", "w") as file:
+                                        json.dump(users, file)
+                                except FileNotFoundError:
+                                    return
                                 print("Hasło zostało zmienione ✅")
                                 return
                             else:

@@ -1,4 +1,3 @@
-
 from utils import load_personal_bests
 styles = {
     "1": {
@@ -83,17 +82,21 @@ def dodaj_rekord_zyciowy(login):
 
 def sprawdz_rekordy_zyciowe(login, choosed_style):
     time_found = False
-
-    with open ("data/personal_bests.csv", "r") as file:
-        for line in file:
-            line = line.strip() # usuwa nam "białe znaki" z kodu np. \n
-            user, time, style = line.split(",")
-            if user.strip() == login and style.strip() == choosed_style:
-                print(f"🏊 Styl: {style}")
-                print(f"⏱️ Czas: {time}")
-                print("-------------------------")
-                time_found = True # Dajemy jako True jest uda nam się znaleźć szukany czas
-                return True
+    try:
+        with open ("data/personal_bests.csv", "r") as file:
+            for line in file:
+                line = line.strip() # usuwa nam "białe znaki" z kodu np. \n
+                if not line:
+                    continue
+                user, time, style = line.split(",")
+                if user.strip() == login and style.strip() == choosed_style:
+                    print(f"🏊 Styl: {style}")
+                    print(f"⏱️ Czas: {time}")
+                    print("-------------------------")
+                    time_found = True # Dajemy jako True jest uda nam się znaleźć szukany czas
+                    return True
+    except FileNotFoundError:
+        return
     if not time_found:
         return False
 
@@ -115,10 +118,10 @@ def wyswietl_rekord_zyciowy(login):
                     if choose_2 in styles[choose]:
                         choosed_style = styles[choose][choose_2]
                         sprawdz_rekordy_zyciowe(login, choosed_style)
-                        if sprawdz_rekordy_zyciowe(login, choosed_style) is False:
-                            print("Nie masz czasu na tym dystansie ❌")
+                        if sprawdz_rekordy_zyciowe(login, choosed_style) is not False:
                             return
                         else:
+                            print("Nie masz czasu na tym dystansie ❌")
                             return
                     else:
                         print("Podano niepoprawny dystans ❌")

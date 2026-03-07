@@ -1,3 +1,4 @@
+import json
 from utils import load_users
 password_tries = 3
 login_tries = 3
@@ -47,8 +48,12 @@ def rejestracja():
                         while True:
                             password_second = input("Powtórz nowe hasło: ")
                             if password_second == password:
-                                with open ("data/users.txt", "a") as file:
-                                    file.write(f"{login}:{password}\n")
+                                users[login] = password
+                                try:
+                                    with open ("data/users.json", "w") as file:
+                                        json.dump(users, file)
+                                except FileNotFoundError:
+                                    return
                                 print("Użytkownik został dodany ✅")
                                 return
                             else:

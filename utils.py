@@ -1,11 +1,11 @@
+import json
+
 def load_users():
     users = {}
 
     try:
-        with open("data/users.txt", "r") as file:
-            for line in file:
-                login, password = line.strip().split(":")
-                users[login] = password
+        with open("data/users.json", "r") as file:
+            users = json.load(file)
     except FileNotFoundError:
         return {}
     return users
