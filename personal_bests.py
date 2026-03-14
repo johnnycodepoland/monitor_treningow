@@ -1,3 +1,5 @@
+import json
+
 from utils import load_personal_bests
 styles = {
     "1": {
@@ -36,9 +38,14 @@ styles = {
 }
 
 def save_personal_best(login, time, description):
+    personal_bests = load_personal_bests()
+
+    if login not in personal_bests:
+        personal_bests[login] = {}
+    personal_bests[login][description] = time
     try:
-        with open("data/personal_bests.csv", "a") as file:
-            file.write(f"{login.strip()},{time.strip()},{description.strip()}\n")
+        with open("data/personal_bests.json", "w") as file:
+            json.dump(personal_bests, file, indent=4)
         print("Rekord życiowy został dodany ✅")
     except FileNotFoundError:
         return
@@ -82,21 +89,14 @@ def add_personal_best(login):
 
 def check_personal_bests(login, choosed_style):
     time_found = False
-    try:
-        with open ("data/personal_bests.csv", "r") as file:
-            for line in file:
-                line = line.strip() # usuwa nam "białe znaki" z kodu np. \n
-                if not line:
-                    continue
-                user, time, style = line.split(",")
-                if user.strip() == login and style.strip() == choosed_style:
-                    print(f"🏊 Styl: {style}")
-                    print(f"⏱️ Czas: {time}")
-                    print("-------------------------")
-                    time_found = True # Dajemy jako True jest uda nam się znaleźć szukany czas
-                    return True
-    except FileNotFoundError:
-        return
+    personal_bests = load_personal_bests()
+
+    if login in personal_bests and choosed_style in personal_bests[login]:
+        print(f"🏊 Styl: {choosed_style}")
+        print(f"⏱️ Czas: {personal_bests[login][choosed_style]}")
+        print("-------------------------")
+        time_found = True # Dajemy jako True jest uda nam się znaleźć szukany czas
+        return True
     if not time_found:
         return False
 
@@ -155,10 +155,8 @@ def edit_personal_best(login):
                                     if minutes.isdigit() and seconds.isdigit() and milliseconds.isdigit() and int(seconds) < 60 and int(milliseconds) < 100:
                                         personal_bests[login][choosed_style] = new_time
                                         try:
-                                            with open("data/personal_bests.csv", "w") as file:
-                                                for user, records in personal_bests.items():
-                                                    for style, time in records.items():
-                                                        file.write(f"{user.strip()},{time.strip()},{style.strip()}\n")
+                                            with open("data/personal_bests.json", "w") as file:
+                                                json.dump(personal_bests, file, indent=4)
                                             print("Nowy czas został zapisany ✅")
                                             return
                                         except FileNotFoundError:
@@ -201,10 +199,8 @@ def delete_personal_best(login):
                                     try:
                                         del personal_bests[login][choosed_style]
                                         try:
-                                            with open("data/personal_bests.csv", "w") as file:
-                                                for user, records in personal_bests.items():
-                                                    for style, time in records.items():
-                                                        file.write(f"{user.strip()},{time.strip()},{style.strip()}\n")
+                                            with open("data/personal_bests.json", "w") as file:
+                                                json.dump(personal_bests, file, indent=4)
                                             print("Rekord życiowy został usunięty ✅")
                                             return
                                         except FileNotFoundError:

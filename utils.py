@@ -24,13 +24,8 @@ def load_personal_bests():
     personal_bests = {}
 
     try:
-        with open ("data/personal_bests.csv", "r") as file:
-            for line in file:
-                line = line.strip() # usuwa nam "białe znaki" z kodu np. \n
-                user, time, style = line.strip().split(",")
-                if user not in personal_bests:
-                    personal_bests[user] = {}
-                personal_bests[user][style] = time
+        with open ("data/personal_bests.json", "r") as file:
+            personal_bests = json.load(file)
     except FileNotFoundError:
         return {}
     return personal_bests
